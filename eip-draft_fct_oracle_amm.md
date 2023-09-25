@@ -28,7 +28,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 Contract Interfaces: 
 There are two interfaces need to be implemented. One is an agency which wrap and unwrap the token with a function oracle, and another one is the application.
 
-
+```
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
@@ -121,8 +121,10 @@ interface IERC7Agency{
      */
     function getWrapOracle(bytes memory data) external view returns(uint256 price, uint256 fee);
  }
- 
- 
+ ```
+
+
+``` 
  interface IERC7App{
     /**
      * @dev Returns the maximum supply of the non-fungible token.
@@ -166,7 +168,7 @@ interface IERC7Agency{
      */
     function burn(uint256 tokenId, bytes calldata data) external;
  }
-
+```
 
 ## Rationale
 
