@@ -1,5 +1,5 @@
 ---
-title: Non-fungible Token Decentralized Credit Endorsement
+title: Token Bound Function Oracle AMM Contract
 description: A Standard Interface System which wrap/unwrap betweem fungible tokens and non-fungible token based on an inbeded Function Oracle AMM to achieve decentralized credit endorsement.
 
 author: Lanyin Zhang(lz8aj@virginia.edu), FirstName LastName <foo@bar.com>, FirstName (@GitHubUsername) and GitHubUsername (@GitHubUsername)>
@@ -11,17 +11,6 @@ created: 2023-09-03
 requires: <EIP number(s)> # Only required when you reference an EIP in the `Specification` section. Otherwise, remove this field.
 ---
 
-<!--
-  READ EIP-1 (https://eips.ethereum.org/EIPS/eip-1) BEFORE USING THIS TEMPLATE!
-
-  This is the suggested template for new EIPs. After you have filled in the requisite fields, please delete these comments.
-
-  Note that an EIP number will be assigned by an editor. When opening a pull request to submit your EIP, please use an abbreviated title in the filename, `eip-draft_title_abbrev.md`.
-
-  The title should be 44 characters or less. It should not repeat the EIP number in title, irrespective of the category.
-
-  TODO: Remove this comment before submitting
--->
 
 ## Abstract
 
@@ -36,8 +25,150 @@ The motivation behind a wrapping system with inbeded Function Oracle AMM is to p
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119 and RFC 8174.
 
+Contract Interfaces: 
+There are two interfaces need to be implemented. One is an agency which wrap and unwrap the token with a function oracle, and another one is the application.
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.10;
+
+struct Asset {
+    address currency;
+    uint256 amount;
+    address payable feeRecipient;
+    uint16 mintFeePercent;
+    uint16 burnFeePercent;
+}
+interface IERC7Agency{
+    /**
+     * @dev Emitted when `tokenId` token is wrapped.
+     * @param to The address of the recipient of the newly created non-fungible token.
+     * @param tokenId The identifier of the newly created non-fungible token.
+     * @param price The price of wrapping.
+     * @param fee The fee of wrapping.
+     */
+    event Wrap(
+        address indexed to,
+        uint256 indexed tokenId,
+        uint256 price,
+        uint256 fee
+    );
+
+    /**
+     * @dev Emitted when `tokenId` token is unwrapped.
+     * @param to The address of the recipient of the currency.
+     * @param tokenId The identifier of the non-fungible token to unwrap.
+     * @param price The price of unwrapping.
+     * @param fee The fee of unwrapping.
+     */
+    event Unwrap(
+        address indexed to,
+        uint256 indexed tokenId,
+        uint256 price,
+        uint256 fee
+    );
+
+    /**
+     * @dev Allows the account to receive Ether
+     *
+     * Accounts MUST implement a `receive` function.
+     *
+     * Accounts MAY perform arbitrary logic to restrict conditions
+     * under which Ether can be received.
+     */
+    receive() external payable;
+
+    /**
+     * @dev Wrap some amount of currency into a non-fungible token.
+     * @param to The address of the recipient of the newly created non-fungible token.
+     * @param data The data to encode into ifself and the newly created non-fungible token.
+     * @return The identifier of the newly created non-fungible token.
+     */
+    function wrap(address to, bytes calldata data) external payable returns (uint256);
+
+    /**
+     * @dev Unwrap a non-fungible token into some amount of currency.
+     *
+     * Todo: event
+     *
+     * @param to The address of the recipient of the currency.
+     * @param tokenId The identifier of the non-fungible token to unwrap.
+     * @param data The data to encode into ifself and the non-fungible token with identifier `tokenId`.
+     */
+    function unwrap(address to, uint256 tokenId, bytes calldata data) external payable;
+
+    /**
+     * @dev Returns the strategy of the agency.
+     * @return app The address of the app.
+     * @return asset The asset of the agency.
+     * @return attributeData The attributeData of the agency.
+     */
+    function getStrategy() external view returns(address app, Asset memory asset, bytes memory attributeData);
+
+    /**
+     * @dev Returns the price and fee of unwrapping.
+     * @param data The data to encode to calculate the price and fee of unwrapping.
+     * @return price The price of wrapping.
+     * @return fee The fee of wrapping.
+     */
+    function getUnwrapOracle(bytes memory data) external view returns(uint256 price, uint256 fee);
+
+    /**
+     * @dev Returns the price and fee of wrapping.
+     * @param data The data to encode to calculate the price and fee of wrapping.
+     * @return price The price of wrapping.
+     * @return fee The fee of wrapping.
+     */
+    function getWrapOracle(bytes memory data) external view returns(uint256 price, uint256 fee);
+ }
+ 
+ 
+ interface IERC7App{
+    /**
+     * @dev Returns the maximum supply of the non-fungible token.
+     */
+    function getMaxSupply() external view returns (uint256);
+
+    /*
+     * @dev Sets the maximum supply of the non-fungible token.
+     * @param maxSupply The maximum supply of the non-fungible token.
+     */
+    function setMaxSupply(uint256 maxSupply) external;
+
+    /**
+     * @dev Returns the name of the non-fungible token with identifier `id`.
+     * @param id The identifier of the non-fungible token.
+     */
+    function getName(uint256 id) external view returns (string memory);
+
+    /**
+     * @dev Returns the agency of the non-fungible token.
+     */
+    function getAgency() external view returns (address payable);
+
+    /**
+     * @dev Sets the agency of the non-fungible token.
+     * @param agency The agency of the non-fungible token.
+     */
+    function setAgency(address payable agency) external;
+
+    /**
+     * @dev Mints a non-fungible token to `to`.
+     * @param to The address of the recipient of the newly created non-fungible token.
+     * @param data The data to encode into the newly created non-fungible token.
+     */
+    function mint(address to, bytes calldata data) external returns (uint256);
+
+    /**
+     * @dev Burns a non-fungible token with identifier `tokenId`.
+     * @param tokenId The identifier of the non-fungible token to burn.
+     * @param data The data to encode into the non-fungible token with identifier `tokenId`.
+     */
+    function burn(uint256 tokenId, bytes calldata data) external;
+ }
+
+
 ## Rationale
-This is a new kind of asset which can entail all kinds of economic activities for payment and financial purposes.
 
 <!--
   The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
@@ -45,6 +176,7 @@ This is a new kind of asset which can entail all kinds of economic activities fo
   The current placeholder is acceptable for a draft.
 
   TODO: Remove this comment before submitting
+  This is a new kind of asset which can entail all kinds of economic activities for payment and financial purposes.
 -->
 
 TBD
