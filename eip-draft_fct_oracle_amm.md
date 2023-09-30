@@ -18,7 +18,8 @@ This proposal defines a system which inbeds a Function Oracle that can wrap fung
 
 ## Motivation
 
-The motivation behind a wrapping system with inbeded Function Oracle AMM is to provide decentralized credit endorsement and thus quantifiable decentralized credit assets with liquidity. This creates an applicable infrastructure for credit creation, transmission, and oracle in payment, social, and financial context. Decentralized credit voucher can be implemented in the form of Non-fungible tokens, compatible with current Ethereum environment, which also expands its application scenarios. The concept of decentralized credit is highly integrated with dApps development. It aims to foster a more trustless environment. 
+The motivation behind a wrapping system with inbeded Function Oracle AMM is to provide decentralized credit endorsement and thus quantifiable decentralized credit assets with liquidity. This creates an applicable infrastructure for credit creation, transmission, and oracle in payment, social, and financial context. Decentralized credit voucher can be implemented in the form of Non-fungible tokens, compatible with current Ethereum environment, which also expands its application scenarios. The concept of decentralized credit is highly integrated with dApps development. It aims to foster a more trustless environment.
+Under current framework of pool, it is hard for user to define how to manage the pool without coding. However, we believe it should be more accessible for users to define and create their own pools to energize the market. Through employing FTs as premium for NFTs under a customizable framework, such an approach standardize the process of creating a pool and allows users to gain the ability to "do it yourself."
 
 
 ## Specification
@@ -26,7 +27,7 @@ The motivation behind a wrapping system with inbeded Function Oracle AMM is to p
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119 and RFC 8174.
 
 Contract Interfaces: 
-There are two interfaces need to be implemented. One is an agency which wrap and unwrap the token with a function oracle, and another one is the application.
+There are two interfaces SHALL be implemented as they are mutually bounded. One is an agency which wrap and unwrap the token with a function oracle, and another one is the wrapper, or the issuer of the vouchers.
 
 ```
 // SPDX-License-Identifier: MIT
@@ -181,7 +182,13 @@ interface IERC7Agency{
   This is a new kind of asset which can entail all kinds of economic activities for payment and financial purposes.
 -->
 
-TBD
+Mutual Bound
+Currency types and functions 
+ERC721 - Required for ID
+Implementation Diversity : customize function and fee percentage 
+Cross-chain Compatibility
+setAgency
+Function
 
 ## Backwards Compatibility
 
@@ -198,27 +205,7 @@ TBD
 
 No backward compatibility issues found.
 
-## Test Cases
 
-<!--
-  This section is optional for non-Core EIPs.
-
-  The Test Cases section should include expected input/output pairs, but may include a succinct set of executable tests. It should not include project build files. No new requirements may be be introduced here (meaning an implementation following only the Specification section should pass all tests here.)
-  If the test suite is too large to reasonably be included inline, then consider adding it as one or more files in `../assets/eip-####/`. External links will not be allowed
-
-  TODO: Remove this comment before submitting
--->
-
-## Reference Implementation
-
-<!--
-  This section is optional.
-
-  The Reference Implementation section should include a minimal implementation that assists in understanding or implementing this specification. It should not include project build files. The reference implementation is not a replacement for the Specification section, and the proposal should still be understandable without it.
-  If the reference implementation is too large to reasonably be included inline, then consider adding it as one or more files in `../assets/eip-####/`. External links will not be allowed.
-
-  TODO: Remove this comment before submitting
--->
 
 ## Security Considerations
 
