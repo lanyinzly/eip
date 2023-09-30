@@ -171,24 +171,6 @@ interface IERC7Agency{
  }
 ```
 
-## Rationale
-
-<!--
-  The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
-
-  The current placeholder is acceptable for a draft.
-
-  TODO: Remove this comment before submitting
-  This is a new kind of asset which can entail all kinds of economic activities for payment and financial purposes.
--->
-
-Mutual Bound
-Currency types and functions 
-ERC721 - Required for ID
-Implementation Diversity : customize function and fee percentage 
-Cross-chain Compatibility
-setAgency
-Function
 
 ## Backwards Compatibility
 
